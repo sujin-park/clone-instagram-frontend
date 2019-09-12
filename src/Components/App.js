@@ -1,23 +1,11 @@
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
+import GlobalStyles from '../Styles/GlobalStyles';
+import Theme from '../Styles/Theme';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
+export default () => (
+  <ThemeProvider theme={Theme}>
+    <GlobalStyles />
+    <h1>Hello</h1>
+  </ThemeProvider>
+);
