@@ -7,54 +7,68 @@ import { LOG_IN } from './AuthQueries';
 import { toast } from 'react-toastify';
 
 export default () => {
-    const [action, setAction] = useState("logIn");
-    const username = useInput("");
-    const firstName = useInput("");
-    const lastName = useInput("");
-    const email = useInput("psujin831@gmail.com");
-    const requestSecret = useMutation(LOG_IN, {
-        update: (_, { data}) => {
-            const { requestSecret } = data;
-            if (!requestSecret) {
-                toast.error('You dont have an account yet, create account');
-                setTimeout(() => setAction('signUp'), 2000);
-            }
-        },
-        variables: { email: email.value }
-    });
-    const createAccount = useMutation('CREATE_ACCOUNT', {
-        username: username.value,
-        email: email.value,
-        firstName: firstName.value,
-        lastName: lastName.value
-    })
-    const onSubmit = (e) => {
-        e.preventDefault();
-        if (action === 'logIn') {
-            if (!email.value ) {
-                requestSecret();
-            } else {
-                toast.error('Email is required');
-            }
-        } else if (action === 'signUp') {
-            if (username.value !== '' &&
-                email.value !== '' &&
-                firstName.value !== '' &&
-                lastName.value !== '') {
-                createAccount();
-            } else {
-                toast.error('All Input is empty');
-            }
-        }
-    };
+  const [action, setAction] = useState('logIn');
+  const username = useInput('');
+  const firstName = useInput('');
+  const lastName = useInput('');
+  const email = useInput('psujin831@gmail.com');
+  const requestSecretMutation = useMutation(LOG_IN, {
+    variables: { email: email.value }
+  });
+  const createAccountMutation = useMutation('CREATE_ACCOUNT', {
+    username: username.value,
+    email: email.value,
+    firstName: firstName.value,
+    lastName: lastName.value
+  });
 
-    return <AuthPresenter
-        setAction={setAction}
-        action={action}
-        username={username}
-        firstName={firstName}
-        lastName={lastName}
-        email={email}
-        onLogin={onSubmit}
-    />;
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (action === 'logIn') {
+      if (!email.value) {
+        try {
+          const { requestSecret } = await requestSecretMutation();
+          if (!requestSecret) {
+            toast.error('You dont have an account yet, create account');
+            setTimeout(() => setAction('signUp'), 3000);
+          }
+        } catch {
+          toast.error('Cant request secret, Network error');
+        }
+      } else {
+        toast.error('Email is required');
+      }
+    } else if (action === 'signUp') {
+      if (username.value !== '' &&
+        email.value !== '' &&
+        firstName.value !== '' &&
+        lastName.value !== '') {
+        try {
+          const { createAccount } = await createAccountMutation();
+          if (!createAccount) {
+            toast.error('You cant create account');
+          } else {
+            toast.success('Account created! Log in now');
+            setTimeout(() => {
+              setAction('LogIn')
+            }, 3000);
+          }
+        } catch (e) {
+          toast.error(e.message);
+        }
+      } else {
+        toast.error('All Input is empty');
+      }
+    }
+  };
+
+  return <AuthPresenter
+    setAction={setAction}
+    action={action}
+    username={username}
+    firstName={firstName}
+    lastName={lastName}
+    email={email}
+    onLogin={onSubmit}
+  />;
 };
