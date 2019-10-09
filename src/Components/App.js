@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import GlobalStyles from '../Styles/GlobalStyles';
 import Theme from '../Styles/Theme';
 import Router from './Router'
+import Header from './Header'
 import Footer from './Footer'
 
 const QUERY = gql`
@@ -18,7 +19,7 @@ const QUERY = gql`
 
 const Wrapper = styled.div`
   margin: 0 auto;
-  max-width: 935px;
+  max-width: ${props => props.theme.maxWidth};
   width: 100%;
 `;
 
@@ -27,8 +28,9 @@ export default () => {
 
   return (
     <ThemeProvider theme={Theme}>
+      <GlobalStyles />
+      <Header/>
       <Wrapper>
-        <GlobalStyles />
         <Router isLoggeddIn={(data || {}).isLoggeddIn} />
         <Footer />
         <ToastContainer position={toast.POSITION.BOTTOM_LEFT}/>
