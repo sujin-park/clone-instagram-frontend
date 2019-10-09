@@ -49,43 +49,51 @@ const Form = styled(Box)`
 
 
 export default ({
-    action,
-    username,
-    firstName,
-    lastName,
-    email,
-    setAction,
-    onSubmit
-}) => (
-    <Wrapper>
-        <Form>
-            {action === "logIn" ? (
-                <form onSubmit={onSubmit}>
-                    <Input placeholder={"Email"} {...email} type="email"/>
-                    <Button text={"Log in"} />
-                </form>
-            ) : (
-                <form onSubmit={onSubmit}>
-                    <Input placeholder={"First name"} {...firstName} />
-                    <Input placeholder={"Last name"} {...lastName} />
-                    <Input placeholder={"Email"} {...email} type="email"/>
-                    <Input placeholder={"Username"} {...username} />
-                    <Button text={"Sign up"} />
-                </form>
-            )}
-        </Form>
-        <StateChanger>
-            {action === "logIn" ? (
-                <>
-                    Don't have an account?{" "}
-                    <Link onClick={() => setAction("signUp")}>Sign up</Link>
-                </>
-            ) : (
-                <>
-                    Have an account?{" "}
-                    <Link onClick={() => setAction("logIn")}>Log in</Link>
-                </>
-            )}
-        </StateChanger>
-    </Wrapper>
+                  action,
+                  username,
+                  firstName,
+                  lastName,
+                  email,
+                  secret,
+                  setAction,
+                  onSubmit
+                }) => (
+  <Wrapper>
+    <Form>
+      {action === 'logIn' && (
+        <form onSubmit={onSubmit}>
+          <Input placeholder={'Email'} {...email} type="email"/>
+          <Button text={'Log in'}/>
+        </form>
+      )}{' '}
+      {action === 'signUp' && (
+        <form onSubmit={onSubmit}>
+          <Input pzlaceholder={'First name'} {...firstName} />
+          <Input placeholder={'Last name'} {...lastName} />
+          <Input placeholder={'Email'} {...email} type='email'/>
+          <Input placeholder={'Username'} {...username} />
+          <Button text={'Sign up'}/>
+        </form>
+      )}
+      {action === 'confirm' && (
+        <form onSubmit={onSubmit}>
+          <Input placeholder="Paste your secret" required {...secret} />
+          <Button text={'Confirm'} />
+        </form>
+      )}
+    </Form>
+    <StateChanger>
+      {action === 'logIn' ? (
+        <>
+          Don't have an account?{' '}
+          <Link onClick={() => setAction('signUp')}>Sign up</Link>
+        </>
+      ) : (
+        <>
+          Have an account?{' '}
+          <Link onClick={() => setAction('logIn')}>Log in</Link>
+        </>
+      )}
+    </StateChanger>
+  </Wrapper>
 );

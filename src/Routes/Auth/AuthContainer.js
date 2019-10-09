@@ -11,6 +11,7 @@ export default () => {
   const username = useInput('');
   const firstName = useInput('');
   const lastName = useInput('');
+  const secret = useInput('');
   const email = useInput('psujin831@gmail.com');
   const requestSecretMutation = useMutation(LOG_IN, {
     variables: { email: email.value }
@@ -27,10 +28,17 @@ export default () => {
     if (action === 'logIn') {
       if (!email.value) {
         try {
-          const { requestSecret } = await requestSecretMutation();
+          const {
+            data: {
+              requestSecret
+            }
+          } = await requestSecretMutation();
           if (!requestSecret) {
             toast.error('You dont have an account yet, create account');
             setTimeout(() => setAction('signUp'), 3000);
+          } else {
+            toast.success('Check your inbox for your login secret');
+            setAction('confirm');
           }
         } catch {
           toast.error('Cant request secret, Network error');
@@ -44,7 +52,11 @@ export default () => {
         firstName.value !== '' &&
         lastName.value !== '') {
         try {
-          const { createAccount } = await createAccountMutation();
+          const {
+            data: {
+              createAccount
+            }
+          } = await createAccountMutation();
           if (!createAccount) {
             toast.error('You cant create account');
           } else {
@@ -69,6 +81,7 @@ export default () => {
     firstName={firstName}
     lastName={lastName}
     email={email}
+    secret={secret}
     onLogin={onSubmit}
   />;
 };
